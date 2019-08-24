@@ -1,0 +1,7 @@
+{
+  "host": "localhost",
+  "username": "manager",
+  "password": "ManagerPass",
+  "port": 3306,
+  "database": "Videoteca"
+}

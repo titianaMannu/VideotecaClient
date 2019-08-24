@@ -1,0 +1,7 @@
+{
+  "host": "localhost",
+  "username": "cliente",
+  "password": "ClientePass",
+  "port": 3306,
+  "database": "Videoteca"
+}
