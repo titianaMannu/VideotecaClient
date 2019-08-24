@@ -11,3 +11,10 @@
 #include "utils.h"
 #endif //VIDEOTECACLIENT_IMPIEGATO_H
 void ImpiegatoRoutine();
+void InserisciCliente(MYSQL *con);
+void LeggiDatiCliente(MYSQL *con);
+void TrovaClientiIrregolari(MYSQL *con);
+void AssegnaCollocazione(MYSQL *con);
+void InserisciFilm(MYSQL *con);
+void LeggiDatiNoleggio(MYSQL *con);
+void AggiungiCopie(MYSQL *con);

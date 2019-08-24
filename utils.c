@@ -76,8 +76,7 @@ MYSQL_TIME *getInputDate(bool onlyYear) {
     }
 
 
-    return
-            ts;
+    return ts;
 
 }
 
@@ -200,6 +199,10 @@ void printer(MYSQL_STMT *stmt, MYSQL *con) {
                         rs_bind[i].buffer = buffer[i];
                         rs_bind[i].buffer_length = MAX_LEN;
                         break;
+                    case MYSQL_TYPE_DATE:
+                        rs_bind[i].buffer = buffer[i];
+                        rs_bind[i].buffer_length = MAX_LEN;
+                        break;
                     default:
                         fprintf(stderr, "ERROR: unexpected type: %d.\n", fields[i].type);
                         exit(1);
@@ -248,6 +251,16 @@ void printer(MYSQL_STMT *stmt, MYSQL *con) {
                             else
                                 printf("%s val[%d] = %lu; ", fields[i].name, i, *(long *) rs_bind[i].buffer);
                             break;
+                        case MYSQL_TYPE_DATE:
+                            if (*rs_bind[i].is_null)
+                                printf(" val[%d] = NULL;", i);
+                            else
+                                printf("%s val[%d] = %u-%u-%u; ", fields[i].name, i,
+                                       ((MYSQL_TIME *) rs_bind[i].buffer)->year,
+                                       ((MYSQL_TIME *) rs_bind[i].buffer)->month,
+                                       ((MYSQL_TIME *) rs_bind[i].buffer)->day);
+                            break;
+
                         default:
                             printf("ERROR: unexpected type (%d)\n", rs_bind[i].buffer_type);
                     }
@@ -280,7 +293,7 @@ int GetInputNumber(char *str) {
         memset(buff, 0, 256); // clear buffer
         printf("%s: ", str);
         getInput(10, buff, false);
-        if (strlen(buff) == 0){
+        if (strlen(buff) == 0) {
             printf("Non è stato inserito nulla, riprovare.\n");
             continue;
         }
@@ -288,8 +301,7 @@ int GetInputNumber(char *str) {
         number = (int) strtol(buff, &ptr, 10);
         if (errno == ERANGE) {
             perror("Numero non valido\n");
-        }
-        else break;
+        } else break;
     }
 
     return number;

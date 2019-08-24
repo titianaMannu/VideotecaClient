@@ -205,7 +205,7 @@ void InserisciImpiegato(MYSQL *con) {
 
     memset(ps_params, 0, sizeof(ps_params));
     memset(query, 0, 256); // clear buffer
-    strcpy(query, "call Videoteca.InserisciImpiegato(?, ?, ?, ?)"); //write query
+    strcpy(query, "call InserisciImpiegato(?, ?, ?, ?)"); //write query
 
     status = mysql_stmt_prepare(stmt, query, strlen(query));
     test_stmt_error(stmt, status);
@@ -218,17 +218,17 @@ void InserisciImpiegato(MYSQL *con) {
     length[0] = strlen(impiegato);
 
     printf("nome: ");
-    memset(nome, 0, 5);
+    memset(nome, 0, 20);
     getInput(20, nome, false);
     length[1] = strlen(nome);
 
     printf("recapito: ");
-    memset(recapito, 0, 5);
+    memset(recapito, 0, 45);
     getInput(45, recapito, false);
     length[2] = strlen(recapito);
 
     printf("titolo studio: ");
-    memset(titoloStudio, 0, 5);
+    memset(titoloStudio, 0, 45);
     getInput(45, titoloStudio, false);
     length[3] = strlen(titoloStudio);
 

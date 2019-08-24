@@ -12,4 +12,5 @@
 #include "cliente.h"
 #include "utils.h"
 #include "manager.h"
+#include "impiegato.h"
 #endif //VIDEOTECACLIENT_MAIN_H

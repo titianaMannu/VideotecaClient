@@ -3,6 +3,7 @@ struct configuration conf;
 
 
 int main() {
-    ClienteRoutine();
+   // ClienteRoutine();
+   ImpiegatoRoutine();
     return 0;
 }

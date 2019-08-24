@@ -6,12 +6,18 @@ CMakeFiles/VideotecaClient.dir/cliente.c.o: ../cliente.h
 CMakeFiles/VideotecaClient.dir/cliente.c.o: ../program.h
 CMakeFiles/VideotecaClient.dir/cliente.c.o: ../utils.h
 
+CMakeFiles/VideotecaClient.dir/impiegato.c.o: ../impiegato.c
+CMakeFiles/VideotecaClient.dir/impiegato.c.o: ../impiegato.h
+CMakeFiles/VideotecaClient.dir/impiegato.c.o: ../program.h
+CMakeFiles/VideotecaClient.dir/impiegato.c.o: ../utils.h
+
 CMakeFiles/VideotecaClient.dir/inout.c.o: ../inout.c
 
 CMakeFiles/VideotecaClient.dir/jsmn.c.o: ../jsmn.c
 CMakeFiles/VideotecaClient.dir/jsmn.c.o: ../jsmn.h
 
 CMakeFiles/VideotecaClient.dir/main.c.o: ../cliente.h
+CMakeFiles/VideotecaClient.dir/main.c.o: ../impiegato.h
 CMakeFiles/VideotecaClient.dir/main.c.o: ../main.c
 CMakeFiles/VideotecaClient.dir/main.c.o: ../main.h
 CMakeFiles/VideotecaClient.dir/main.c.o: ../manager.h

@@ -6,6 +6,11 @@ CMakeFiles/VideotecaClient.dir/cliente.c.o
  /home/tiziana/CLionProjects/VideotecaClient/cliente.h
  /home/tiziana/CLionProjects/VideotecaClient/program.h
  /home/tiziana/CLionProjects/VideotecaClient/utils.h
+CMakeFiles/VideotecaClient.dir/impiegato.c.o
+ /home/tiziana/CLionProjects/VideotecaClient/impiegato.c
+ /home/tiziana/CLionProjects/VideotecaClient/impiegato.h
+ /home/tiziana/CLionProjects/VideotecaClient/program.h
+ /home/tiziana/CLionProjects/VideotecaClient/utils.h
 CMakeFiles/VideotecaClient.dir/inout.c.o
  /home/tiziana/CLionProjects/VideotecaClient/inout.c
 CMakeFiles/VideotecaClient.dir/jsmn.c.o
@@ -13,6 +18,7 @@ CMakeFiles/VideotecaClient.dir/jsmn.c.o
  /home/tiziana/CLionProjects/VideotecaClient/jsmn.h
 CMakeFiles/VideotecaClient.dir/main.c.o
  /home/tiziana/CLionProjects/VideotecaClient/cliente.h
+ /home/tiziana/CLionProjects/VideotecaClient/impiegato.h
  /home/tiziana/CLionProjects/VideotecaClient/main.c
  /home/tiziana/CLionProjects/VideotecaClient/main.h
  /home/tiziana/CLionProjects/VideotecaClient/manager.h
