@@ -26,6 +26,7 @@ MYSQL_TIME *getInputDate(bool onlyYear) {
     ritenta:
     if (!onlyYear) printf("inserire data come yyyy-mm-dd: ");
     else printf("inserire anno: ");
+    ptr = NULL;
 
     memset(ts, 0, sizeof(MYSQL_TIME));
 

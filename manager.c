@@ -1,7 +1,3 @@
-//
-// Created by tiziana on 23/08/19.
-//
-
 
 #include "manager.h"
 
@@ -11,7 +7,7 @@ char buff[256];
 struct configuration conf;
 
 
-void managerRoutine() {
+void ManagerRoutine() {
     int operation;
     MYSQL_STMT *stmt; // supporto per prepared statement
     MYSQL *con = mysql_init(NULL); //inizializza connessione
@@ -31,43 +27,49 @@ void managerRoutine() {
         printf("Could not initialize statement\n");
         exit(1);
     }
+
+
     selezione:
-    printf("seleziona il numero dell'operazione da eseguire:\n"
+    printf("\n************************************\n"
+           "seleziona il numero dell'operazione da eseguire:\n"
            "1: Fai repport annuale\n"
            "2: Fai repport mensile\n"
            "3: Inserisci impiegato\n"
            "4: Mostra dati di un impiegato\n"
            "5: Assegna Turno ad Impiegato\n"
            "6: Trova film più noleggiato\n"
-           "7: Assegna impiego ad impiegato\n");
+           "7: Assegna impiego ad impiegato\n"
+           "8: Chiudi applicazione\n");
     operation = GetInputNumber("operazione da effettuare");
+
     switch (operation) {
         case 1:
             ReportAnnuale(con);
-            break;
+            goto selezione;
         case 2:
             ReportMensile(con);
-            break;
+            goto selezione;
         case 3:
             InserisciImpiegato(con);
-            break;
+            goto selezione;
         case 4:
             CheckDatiImpiegato(con);
-            break;
+            goto selezione;
         case 5:
             AssegnaTurno(con);
-            break;
+            goto selezione;
         case 6:
             FilmPiuNoleggiato(con);
-            break;
+            goto selezione;
         case 7:
             AssegnaImpiego(con);
+            goto selezione;
+        case 8:
             break;
         default:
             goto selezione;
-    }
 
-    // This is a general piece of code, to
+    }
     mysql_close(con);
 }
 

@@ -18,3 +18,4 @@ void AssegnaCollocazione(MYSQL *con);
 void InserisciFilm(MYSQL *con);
 void LeggiDatiNoleggio(MYSQL *con);
 void AggiungiCopie(MYSQL *con);
+void ModificaPosizione(MYSQL *con);

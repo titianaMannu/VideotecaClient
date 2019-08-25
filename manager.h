@@ -12,7 +12,7 @@
 #include <errno.h>
 #endif //VIDEOTECACLIENT_MANAGER_H
 void ReportAnnuale(MYSQL *con);
-void managerRoutine();
+void ManagerRoutine();
 void ReportMensile(MYSQL *con);
 void InserisciImpiegato(MYSQL *con);
 void CheckDatiImpiegato(MYSQL *con);

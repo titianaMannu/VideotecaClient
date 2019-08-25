@@ -1,8 +1,3 @@
-//
-// Created by tiziana on 24/08/19.
-//
-
-
 #include "impiegato.h"
 char query[256];
 char buff[256];
@@ -32,36 +27,44 @@ void ImpiegatoRoutine() {
     }
 
     selezione:
-    printf("seleziona il numero dell'operazione da eseguire:\n"
+    printf("\n************************************\n"
+           "seleziona il numero dell'operazione da eseguire:\n"
            "1: Inserisci nuovo cliente\n"
            "2: Leggi dati cliente\n"
            "3: Trova clienti irregolari in un centro\n"
            "4: Assegna collocazione\n"
            "5: Inserisci Film\n"
            "6: Leggi dati noleggio\n"
-           "7: Aggiungi Copie in settore\n");
+           "7: Aggiungi Copie in settore\n"
+           "8: Modifica posizione di un film\n"
+           "9: Chiudi applicazione\n");
     operation = GetInputNumber("operazione da effettuare");
     switch (operation) {
         case 1:
             InserisciCliente(con);
-            break;
+            goto selezione;
         case 2:
             LeggiDatiCliente(con);
-            break;
+            goto selezione;
         case 3:
             TrovaClientiIrregolari(con);
-            break;
+            goto selezione;
         case 4:
             AssegnaCollocazione(con);
-            break;
+            goto selezione;
         case 5:
             InserisciFilm(con);
-            break;
+            goto selezione;
         case 6:
             LeggiDatiNoleggio(con);
-            break;
+            goto selezione;
         case 7:
             AggiungiCopie(con);
+            goto selezione;
+        case 8:
+            ModificaPosizione(con);
+            goto selezione;
+        case 9:
             break;
         default:
             goto selezione;
@@ -457,7 +460,7 @@ void LeggiDatiNoleggio(MYSQL *con){
 void AggiungiCopie(MYSQL *con){
     int status, centro, settore;
     char titolo[45], regista[45], *tipologia[] = {"VHS", "DVD"};
-    int occ, pos, val;
+    int occ, val;
 
     unsigned long length[6];
     MYSQL_BIND ps_params[6];
@@ -525,6 +528,77 @@ void AggiungiCopie(MYSQL *con){
     ps_params[5].length = &length[5];
     ps_params[5].is_null = 0;
 
+
+    status = mysql_stmt_bind_param(stmt, ps_params);
+    test_stmt_error(stmt, status);
+
+    status = mysql_stmt_execute(stmt);
+    test_stmt_error(stmt, status);
+
+    printer(stmt, con);
+    mysql_stmt_close(stmt);
+}
+
+void ModificaPosizione(MYSQL *con){
+    int status, centro, settore;
+    char titolo[45], regista[45];
+    int pos, val;
+
+    unsigned long length[5];
+    MYSQL_BIND ps_params[5];
+    MYSQL_STMT *stmt;
+    stmt = mysql_stmt_init(con); //inizializzazione dello statement
+    if (!stmt) {
+        printf("Could not initialize statement\n");
+        exit(1);
+    }
+
+    memset(ps_params, 0, sizeof(ps_params));
+    memset(query, 0, 256); // clear buffer
+    strcpy(query, "call ModificaPosizione(?, ?, ?, ?, ?)"); //write query
+
+    status = mysql_stmt_prepare(stmt, query, strlen(query));
+    test_stmt_error(stmt, status);
+
+    centro = GetInputNumber("centro");
+    settore = GetInputNumber("settore");
+
+    printf("titolo film: ");
+    memset(titolo, 0, 45);
+    getInput(45, titolo, false);
+    length[2] = strlen(titolo);
+
+    printf("regista film: ");
+    memset(regista, 0, 45);
+    getInput(45, regista, false);
+    length[3] = strlen(regista);
+
+    pos = GetInputNumber("nuova posizione");
+
+    ps_params[0].buffer_type = MYSQL_TYPE_LONG;
+    ps_params[0].buffer = &centro;
+    ps_params[0].length = 0;
+    ps_params[0].is_null = 0;
+
+    ps_params[1].buffer_type = MYSQL_TYPE_LONG;
+    ps_params[1].buffer = &settore;
+    ps_params[1].length = 0;
+    ps_params[1].is_null = 0;
+
+    ps_params[2].buffer_type = MYSQL_TYPE_VAR_STRING;
+    ps_params[2].buffer = (char *) titolo;
+    ps_params[2].length = &length[2];
+    ps_params[2].is_null = 0;
+
+    ps_params[3].buffer_type = MYSQL_TYPE_VAR_STRING;
+    ps_params[3].buffer = (char *) regista;
+    ps_params[3].length = &length[3];
+    ps_params[3].is_null = 0;
+
+    ps_params[4].buffer_type = MYSQL_TYPE_LONG;
+    ps_params[4].buffer = &pos;
+    ps_params[4].length = 0;
+    ps_params[4].is_null = 0;
 
     status = mysql_stmt_bind_param(stmt, ps_params);
     test_stmt_error(stmt, status);

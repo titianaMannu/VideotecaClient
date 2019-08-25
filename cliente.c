@@ -1,7 +1,3 @@
-//
-// Created by tiziana on 23/08/19.
-//
-
 
 #include "cliente.h"
 
@@ -34,28 +30,32 @@ void ClienteRoutine() {
     }
 
     selezione:
-    printf("seleziona il numero dell'operazione da eseguire:\n"
+    printf("\n************************************\n"
+            "seleziona il numero dell'operazione da eseguire:\n"
            "1: Noleggia Film\n"
            "2: Chiudi Noleggio\n"
            "3: Leggi film in un centro\n"
            "4: Trova copie disponibili film in un centro\n"
-           "5: Trova Remakes di un film\n");
+           "5: Trova Remakes di un film\n"
+           "6: Chiui l'applicazione\n");
     operation = GetInputNumber("operazione da effettuare");
     switch (operation) {
         case 1:
             NoleggiaFilm(con);
-            break;
+            goto selezione;
         case 2:
             ChiudiNoleggio(con);
-            break;
+            goto selezione;
         case 3:
             ListaFilmInCentro(con);
-            break;
+            goto selezione;
         case 4:
             TrovaCopieInCentro(con);
-            break;
+            goto selezione;
         case 5:
             TrovaRemakes(con);
+            goto selezione;
+        case 6:
             break;
         default:
             goto selezione;
