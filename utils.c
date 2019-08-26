@@ -92,6 +92,7 @@ MYSQL_TIME *getInputTime() {
 
     ritenta1:
     printf("inserire orario come hh:mm ");
+    ptr = NULL;
 
     memset(ts, 0, sizeof(MYSQL_TIME));
 
@@ -288,8 +289,10 @@ void printer(MYSQL_STMT *stmt, MYSQL *con) {
 
 
 int GetInputNumber(char *str) {
+    char *ptr;
     int number;
     while (1) {
+        ptr = NULL;
         printf("Inserire %s\n", str);
         memset(buff, 0, 256); // clear buffer
         printf("%s: ", str);
@@ -298,8 +301,11 @@ int GetInputNumber(char *str) {
             printf("Non è stato inserito nulla, riprovare.\n");
             continue;
         }
-        char *ptr;
         number = (int) strtol(buff, &ptr, 10);
+        if (buff == ptr){
+            printf("Non è stato inserito un numero\n");
+            continue;
+        }
         if (errno == ERANGE) {
             perror("Numero non valido\n");
         } else break;
