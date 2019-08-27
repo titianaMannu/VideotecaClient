@@ -24,7 +24,7 @@ MYSQL_TIME *getInputDate(bool onlyYear) {
     }
 
     //ritenta:
-    while(1) {
+    while (1) {
         if (!onlyYear) printf("inserire data come yyyy-mm-dd: ");
         else printf("inserire anno: ");
         ptr = NULL;
@@ -89,7 +89,7 @@ MYSQL_TIME *getInputTime() {
         exit(EXIT_FAILURE);
     }
 
-    while(1) {
+    while (1) {
         printf("inserire orario come hh:mm ");
         ptr = NULL;
 
@@ -228,7 +228,7 @@ void printer(MYSQL_STMT *stmt, MYSQL *con) {
                             if (*rs_bind[i].is_null)
                                 printf(" val[%d] = NULL;", i);
                             else
-                                printf("%s val[%d] = %s; ", fields[i].name, i, rs_bind[i].buffer);
+                                printf("%s val[%d] = %s; ", fields[i].name, i, (char *) rs_bind[i].buffer);
                             break;
                         case MYSQL_TYPE_LONG:
                             if (*rs_bind[i].is_null)
@@ -246,7 +246,7 @@ void printer(MYSQL_STMT *stmt, MYSQL *con) {
                             if (*rs_bind[i].is_null)
                                 printf(" val[%d] = NULL;", i);
                             else
-                                printf("%s val[%d] = %s; ", fields[i].name, i, rs_bind[i].buffer);
+                                printf("%s val[%d] = %s; ", fields[i].name, i, (char *) rs_bind[i].buffer);
                             break;
                         case MYSQL_TYPE_YEAR:
                             if (*rs_bind[i].is_null)
@@ -303,7 +303,7 @@ int GetInputNumber(char *str) {
             continue;
         }
         number = (int) strtol(buff, &ptr, 10);
-        if (buff == ptr){
+        if (buff == ptr) {
             printf("Non è stato inserito un numero\n");
             continue;
         }
