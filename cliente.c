@@ -29,37 +29,36 @@ void ClienteRoutine() {
         exit(1);
     }
 
-    selezione:
-    printf("\n************************************\n"
-            "seleziona il numero dell'operazione da eseguire:\n"
-           "1: Noleggia Film\n"
-           "2: Chiudi Noleggio\n"
-           "3: Leggi film in un centro\n"
-           "4: Trova copie disponibili film in un centro\n"
-           "5: Trova Remakes di un film\n"
-           "6: Chiui l'applicazione\n");
-    operation = GetInputNumber("operazione da effettuare");
-    switch (operation) {
-        case 1:
-            NoleggiaFilm(con);
-            goto selezione;
-        case 2:
-            ChiudiNoleggio(con);
-            goto selezione;
-        case 3:
-            ListaFilmInCentro(con);
-            goto selezione;
-        case 4:
-            TrovaCopieInCentro(con);
-            goto selezione;
-        case 5:
-            TrovaRemakes(con);
-            goto selezione;
-        case 6:
-            break;
-        default:
-            goto selezione;
-    }
+    do {
+        printf("\n************************************\n"
+               "seleziona il numero dell'operazione da eseguire:\n"
+               "1: Noleggia Film\n"
+               "2: Chiudi Noleggio\n"
+               "3: Leggi film in un centro\n"
+               "4: Trova copie disponibili film in un centro\n"
+               "5: Trova Remakes di un film\n"
+               "6: Chiui l'applicazione\n");
+        operation = GetInputNumber("operazione da effettuare");
+        switch (operation) {
+            case 1:
+                NoleggiaFilm(con);
+                break;
+            case 2:
+                ChiudiNoleggio(con);
+                break;
+            case 3:
+                ListaFilmInCentro(con);
+                break;
+            case 4:
+                TrovaCopieInCentro(con);
+                break;
+            case 5:
+                TrovaRemakes(con);
+                break;
+            default:
+                break;
+        }
+    }while(operation != 6);
 
     // This is a general piece of code, to
     mysql_close(con);

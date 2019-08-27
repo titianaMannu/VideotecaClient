@@ -29,47 +29,46 @@ void ManagerRoutine() {
     }
 
 
-    selezione:
-    printf("\n************************************\n"
-           "seleziona il numero dell'operazione da eseguire:\n"
-           "1: Fai repport annuale\n"
-           "2: Fai repport mensile\n"
-           "3: Inserisci impiegato\n"
-           "4: Mostra dati di un impiegato\n"
-           "5: Assegna Turno ad Impiegato\n"
-           "6: Trova film più noleggiato\n"
-           "7: Assegna impiego ad impiegato\n"
-           "8: Chiudi applicazione\n");
-    operation = GetInputNumber("operazione da effettuare");
+    do {
+        printf("\n************************************\n"
+               "seleziona il numero dell'operazione da eseguire:\n"
+               "1: Fai repport annuale\n"
+               "2: Fai repport mensile\n"
+               "3: Inserisci impiegato\n"
+               "4: Mostra dati di un impiegato\n"
+               "5: Assegna Turno ad Impiegato\n"
+               "6: Trova film più noleggiato\n"
+               "7: Assegna impiego ad impiegato\n"
+               "8: Chiudi applicazione\n");
+        operation = GetInputNumber("operazione da effettuare");
 
-    switch (operation) {
-        case 1:
-            ReportAnnuale(con);
-            goto selezione;
-        case 2:
-            ReportMensile(con);
-            goto selezione;
-        case 3:
-            InserisciImpiegato(con);
-            goto selezione;
-        case 4:
-            CheckDatiImpiegato(con);
-            goto selezione;
-        case 5:
-            AssegnaTurno(con);
-            goto selezione;
-        case 6:
-            FilmPiuNoleggiato(con);
-            goto selezione;
-        case 7:
-            AssegnaImpiego(con);
-            goto selezione;
-        case 8:
-            break;
-        default:
-            goto selezione;
+        switch (operation) {
+            case 1:
+                ReportAnnuale(con);
+                break;
+            case 2:
+                ReportMensile(con);
+                break;
+            case 3:
+                InserisciImpiegato(con);
+                break;
+            case 4:
+                CheckDatiImpiegato(con);
+                break;
+            case 5:
+                AssegnaTurno(con);
+                break;
+            case 6:
+                FilmPiuNoleggiato(con);
+                break;
+            case 7:
+                AssegnaImpiego(con);
+                break;
+            default:
+                break;
+        }
+    } while (operation != 8);
 
-    }
     mysql_close(con);
 }
 

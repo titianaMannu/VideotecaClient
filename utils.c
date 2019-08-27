@@ -23,59 +23,58 @@ MYSQL_TIME *getInputDate(bool onlyYear) {
         exit(EXIT_FAILURE);
     }
 
-    ritenta:
-    if (!onlyYear) printf("inserire data come yyyy-mm-dd: ");
-    else printf("inserire anno: ");
-    ptr = NULL;
+    //ritenta:
+    while(1) {
+        if (!onlyYear) printf("inserire data come yyyy-mm-dd: ");
+        else printf("inserire anno: ");
+        ptr = NULL;
 
-    memset(ts, 0, sizeof(MYSQL_TIME));
+        memset(ts, 0, sizeof(MYSQL_TIME));
 
-    memset(buff, 0, 256); // clear buffer
-    getInput(20, buff, false);
-    token = strtok(buff, "-");
-    if (buff == ptr || token == NULL) {
-        printf("Data non valida\n");
-        goto ritenta;
-    }
-    ts->year = strtol(token, &ptr, 10);
-    if (errno == ERANGE) {
-        perror("strtol error");
-        goto ritenta;
-    }
-    if (!onlyYear) {
-        //*********settaggio mese
-        token = strtok(NULL, "-");
+        memset(buff, 0, 256); // clear buffer
+        getInput(20, buff, false);
+        token = strtok(buff, "-");
         if (buff == ptr || token == NULL) {
             printf("Data non valida\n");
-            goto ritenta;
+            continue;
         }
-        ts->month = (unsigned int) strtol(token, &ptr, 10);
+        ts->year = strtol(token, &ptr, 10);
         if (errno == ERANGE) {
             perror("strtol error");
-            goto ritenta;
-        } else if (ts->month > 12 || ts->month < 1) {
-            printf("mese non valido\n");
-            goto ritenta;
+            continue;
         }
-        //*********settaggio giorno
-        token = strtok(NULL, "-");
-        if (buff == ptr || token == NULL) {
-            printf("Data non valida\n");
-            goto
-                    ritenta;
+        if (!onlyYear) {
+            //*********settaggio mese
+            token = strtok(NULL, "-");
+            if (buff == ptr || token == NULL) {
+                printf("Data non valida\n");
+                continue;
+            }
+            ts->month = (unsigned int) strtol(token, &ptr, 10);
+            if (errno == ERANGE) {
+                perror("strtol error");
+                continue;
+            } else if (ts->month > 12 || ts->month < 1) {
+                printf("mese non valido\n");
+                continue;
+            }
+            //*********settaggio giorno
+            token = strtok(NULL, "-");
+            if (buff == ptr || token == NULL) {
+                printf("Data non valida\n");
+                continue;
+            }
+            ts->day = (unsigned int) strtol(token, &ptr, 10);
+            if (errno == ERANGE) {
+                perror("strtol error");
+                continue;
+            } else if (ts->day > 31 || ts->day < 1) {
+                printf("giorno non valido\n");
+                continue;
+            }
         }
-        ts->day = (unsigned int) strtol(token, &ptr, 10);
-        if (errno == ERANGE) {
-            perror("strtol error");
-            goto
-                    ritenta;
-        } else if (ts->day > 31 || ts->day < 1) {
-            printf("giorno non valido\n");
-            goto
-                    ritenta;
-        }
+        break;
     }
-
 
     return ts;
 
@@ -90,40 +89,42 @@ MYSQL_TIME *getInputTime() {
         exit(EXIT_FAILURE);
     }
 
-    ritenta1:
-    printf("inserire orario come hh:mm ");
-    ptr = NULL;
+    while(1) {
+        printf("inserire orario come hh:mm ");
+        ptr = NULL;
 
-    memset(ts, 0, sizeof(MYSQL_TIME));
+        memset(ts, 0, sizeof(MYSQL_TIME));
 
-    memset(buff, 0, 256); // clear buffer
-    getInput(20, buff, false);
-    token = strtok(buff, ":");
-    if (buff == ptr || token == NULL) {
-        printf("Orario non valido\n");
-        goto ritenta1;
-    }
-    ts->hour = strtol(token, &ptr, 10);
-    if (errno == ERANGE) {
-        perror("strtol error");
-        goto ritenta1;
-    } else if (ts->hour < 1 || ts->hour > 24) {
-        printf("ora non valida\n");
-        goto ritenta1;
-    }
+        memset(buff, 0, 256); // clear buffer
+        getInput(20, buff, false);
+        token = strtok(buff, ":");
+        if (buff == ptr || token == NULL) {
+            printf("Orario non valido\n");
+            continue;
+        }
+        ts->hour = strtol(token, &ptr, 10);
+        if (errno == ERANGE) {
+            perror("strtol error");
+            continue;
+        } else if (ts->hour < 1 || ts->hour > 24) {
+            printf("ora non valida\n");
+            continue;
+        }
 
-    token = strtok(NULL, ":");
-    if (buff == ptr || token == NULL) {
-        printf("Orario non Valido\n");
-        goto ritenta1;
-    }
-    ts->minute = strtol(token, &ptr, 10);
-    if (errno == ERANGE) {
-        perror("strtol error");
-        goto ritenta1;
-    } else if (ts->minute > 60 || ts->minute < 0) {
-        printf("minuti non valid1\n");
-        goto ritenta1;
+        token = strtok(NULL, ":");
+        if (buff == ptr || token == NULL) {
+            printf("Orario non Valido\n");
+            continue;
+        }
+        ts->minute = strtol(token, &ptr, 10);
+        if (errno == ERANGE) {
+            perror("strtol error");
+            continue;
+        } else if (ts->minute > 60 || ts->minute < 0) {
+            printf("minuti non valid1\n");
+            continue;
+        }
+        break;
     }
     return ts;
 }

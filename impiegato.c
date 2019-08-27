@@ -1,4 +1,5 @@
 #include "impiegato.h"
+
 char query[256];
 char buff[256];
 
@@ -25,54 +26,53 @@ void ImpiegatoRoutine() {
         printf("Could not initialize statement\n");
         exit(1);
     }
+    do {
+        printf("\n************************************\n"
+               "seleziona il numero dell'operazione da eseguire:\n"
+               "1: Inserisci nuovo cliente\n"
+               "2: Leggi dati cliente\n"
+               "3: Trova clienti irregolari in un centro\n"
+               "4: Assegna collocazione\n"
+               "5: Inserisci Film\n"
+               "6: Leggi dati noleggio\n"
+               "7: Aggiungi Copie in settore\n"
+               "8: Modifica posizione di un film\n"
+               "9: Chiudi applicazione\n");
+        operation = GetInputNumber("operazione da effettuare");
+        switch (operation) {
+            case 1:
+                InserisciCliente(con);
+                break;
+            case 2:
+                LeggiDatiCliente(con);
+                break;
+            case 3:
+                TrovaClientiIrregolari(con);
+                break;
+            case 4:
+                AssegnaCollocazione(con);
+                break;
+            case 5:
+                InserisciFilm(con);
+                break;
+            case 6:
+                LeggiDatiNoleggio(con);
+                break;
+            case 7:
+                AggiungiCopie(con);
+                break;
+            case 8:
+                ModificaPosizione(con);
+                break;
+            default:
+                break;
+        }
+    } while (operation != 9);
 
-    selezione:
-    printf("\n************************************\n"
-           "seleziona il numero dell'operazione da eseguire:\n"
-           "1: Inserisci nuovo cliente\n"
-           "2: Leggi dati cliente\n"
-           "3: Trova clienti irregolari in un centro\n"
-           "4: Assegna collocazione\n"
-           "5: Inserisci Film\n"
-           "6: Leggi dati noleggio\n"
-           "7: Aggiungi Copie in settore\n"
-           "8: Modifica posizione di un film\n"
-           "9: Chiudi applicazione\n");
-    operation = GetInputNumber("operazione da effettuare");
-    switch (operation) {
-        case 1:
-            InserisciCliente(con);
-            goto selezione;
-        case 2:
-            LeggiDatiCliente(con);
-            goto selezione;
-        case 3:
-            TrovaClientiIrregolari(con);
-            goto selezione;
-        case 4:
-            AssegnaCollocazione(con);
-            goto selezione;
-        case 5:
-            InserisciFilm(con);
-            goto selezione;
-        case 6:
-            LeggiDatiNoleggio(con);
-            goto selezione;
-        case 7:
-            AggiungiCopie(con);
-            goto selezione;
-        case 8:
-            ModificaPosizione(con);
-            goto selezione;
-        case 9:
-            break;
-        default:
-            goto selezione;
-    }
     mysql_close(con);
 }
 
-void InserisciCliente(MYSQL *con){
+void InserisciCliente(MYSQL *con) {
     char *codFiscale = malloc(22);
     char cognome[45];
     char nome[45];
@@ -169,7 +169,7 @@ void InserisciCliente(MYSQL *con){
     mysql_stmt_close(stmt);
 }
 
-void LeggiDatiCliente(MYSQL *con){
+void LeggiDatiCliente(MYSQL *con) {
     MYSQL_BIND ps_params[1];
     MYSQL_STMT *stmt;
     int status, tessera;
@@ -203,7 +203,7 @@ void LeggiDatiCliente(MYSQL *con){
     mysql_stmt_close(stmt);
 }
 
-void TrovaClientiIrregolari(MYSQL *con){
+void TrovaClientiIrregolari(MYSQL *con) {
     MYSQL_BIND ps_params[1];
     MYSQL_STMT *stmt;
     int status, centro;
@@ -237,7 +237,7 @@ void TrovaClientiIrregolari(MYSQL *con){
     mysql_stmt_close(stmt);
 }
 
-void AssegnaCollocazione(MYSQL *con){
+void AssegnaCollocazione(MYSQL *con) {
     int status, centro, settore;
     char titolo[45], regista[45], *tipologia[] = {"VHS", "DVD"};
     int occ, pos, val;
@@ -326,10 +326,10 @@ void AssegnaCollocazione(MYSQL *con){
     mysql_stmt_close(stmt);
 }
 
-void InserisciFilm(MYSQL *con){
+void InserisciFilm(MYSQL *con) {
     int status, costo;
     char titolo[45], regista[45], titoloOriginale[45], registaOriginale[45], *tipologia[] = {"classico", "nuovo"};
-    int  val;
+    int val;
 
     MYSQL_TIME *ts;
     unsigned long length[7];
@@ -423,7 +423,7 @@ void InserisciFilm(MYSQL *con){
     mysql_stmt_close(stmt);
 }
 
-void LeggiDatiNoleggio(MYSQL *con){
+void LeggiDatiNoleggio(MYSQL *con) {
     MYSQL_BIND ps_params[1];
     MYSQL_STMT *stmt;
     int status, idNoleggio;
@@ -457,7 +457,7 @@ void LeggiDatiNoleggio(MYSQL *con){
     mysql_stmt_close(stmt);
 }
 
-void AggiungiCopie(MYSQL *con){
+void AggiungiCopie(MYSQL *con) {
     int status, centro, settore;
     char titolo[45], regista[45], *tipologia[] = {"VHS", "DVD"};
     int occ, val;
@@ -539,7 +539,7 @@ void AggiungiCopie(MYSQL *con){
     mysql_stmt_close(stmt);
 }
 
-void ModificaPosizione(MYSQL *con){
+void ModificaPosizione(MYSQL *con) {
     int status, centro, settore;
     char titolo[45], regista[45];
     int pos, val;
