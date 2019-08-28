@@ -6,6 +6,26 @@
 
 #IncludeRegexTransform: 
 
+/home/tiziana/CLionProjects/VideotecaClient/cliente.c
+cliente.h
+/home/tiziana/CLionProjects/VideotecaClient/cliente.h
+
+/home/tiziana/CLionProjects/VideotecaClient/cliente.h
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+mysql/mysql.h
+-
+errno.h
+-
+utils.h
+/home/tiziana/CLionProjects/VideotecaClient/utils.h
+program.h
+/home/tiziana/CLionProjects/VideotecaClient/program.h
+
 /home/tiziana/CLionProjects/VideotecaClient/program.h
 stdbool.h
 -

@@ -10,7 +10,6 @@ struct configuration conf;
 
 void ClienteRoutine() {
     int operation;
-    MYSQL_STMT *stmt; // supporto per prepared statement
     MYSQL *con = mysql_init(NULL); //inizializza connessione
     load_file(&config, "../cliente.json");
     parse_config();
@@ -19,16 +18,10 @@ void ClienteRoutine() {
         fprintf(stderr, "Initilization error: %s\n", mysql_error(con));
         exit(1);
     }
+    // si stabilisce una connessione reale in base ai parametri inseriti nel file json
     if (mysql_real_connect(con, conf.host, conf.username, conf.password, conf.database, conf.port, NULL, 0) == NULL) {
         finish_with_error(con, "Connection");
     }
-
-    stmt = mysql_stmt_init(con); //inizializzazione dello statement
-    if (!stmt) {
-        printf("Could not initialize statement\n");
-        exit(1);
-    }
-
     do {
         printf("\n************************************\n"
                "seleziona il numero dell'operazione da eseguire:\n"
@@ -56,16 +49,14 @@ void ClienteRoutine() {
                 TrovaRemakes(con);
                 break;
             default:
+                printf("operazione non prevista\n");
                 break;
         }
     }while(operation != 6);
-
-    // This is a general piece of code, to
     mysql_close(con);
 }
 
 void NoleggiaFilm(MYSQL *con) {
-    char *ptr;
     int idCopia;
     int tessera;
     MYSQL_TIME *ts;
@@ -82,7 +73,7 @@ void NoleggiaFilm(MYSQL *con) {
     strcpy(query, "CALL `NoleggiaFilm`(?, ?, ?)"); //write query
     status = mysql_stmt_prepare(stmt, query, strlen(query));
     test_stmt_error(stmt, status);
-
+//segue la raccolta dei parametri da stdin
     idCopia = GetInputNumber("id copia");
 
     tessera = GetInputNumber("tessera");
@@ -106,10 +97,10 @@ void NoleggiaFilm(MYSQL *con) {
 
     status = mysql_stmt_bind_param(stmt, ps_params);
     test_stmt_error(stmt, status);
-
+    //esecuzione stored procedure
     status = mysql_stmt_execute(stmt);
     test_stmt_error(stmt, status);
-
+//printer è una funzione generica che stampa l'output della stored procedure
     printer(stmt, con);
 
     mysql_stmt_close(stmt);
@@ -132,7 +123,7 @@ void ChiudiNoleggio(MYSQL *con) {
 
     status = mysql_stmt_prepare(stmt, query, strlen(query));
     test_stmt_error(stmt, status);
-
+//segue la raccolta dei parametri da stdin
     idNoleggio = GetInputNumber("Id Noleggio");
 
     ps_params[0].buffer_type = MYSQL_TYPE_LONG;
@@ -142,10 +133,10 @@ void ChiudiNoleggio(MYSQL *con) {
 
     status = mysql_stmt_bind_param(stmt, ps_params);
     test_stmt_error(stmt, status);
-
+    //esecuzione stored procedure
     status = mysql_stmt_execute(stmt);
     test_stmt_error(stmt, status);
-
+//printer è una funzione generica che stampa l'output della stored procedure
     printer(stmt, con);
     mysql_stmt_close(stmt);
 }
@@ -166,7 +157,7 @@ void ListaFilmInCentro(MYSQL *con) {
 
     status = mysql_stmt_prepare(stmt, query, strlen(query));
     test_stmt_error(stmt, status);
-
+//segue la raccolta dei parametri da stdin
     centro = GetInputNumber("centro");
 
     ps_params[0].buffer_type = MYSQL_TYPE_LONG;
@@ -176,10 +167,10 @@ void ListaFilmInCentro(MYSQL *con) {
 
     status = mysql_stmt_bind_param(stmt, ps_params);
     test_stmt_error(stmt, status);
-
+    //esecuzione stored procedure
     status = mysql_stmt_execute(stmt);
     test_stmt_error(stmt, status);
-
+//printer è una funzione generica che stampa l'output della stored procedure
     printer(stmt, con);
     mysql_stmt_close(stmt);
 }
@@ -204,7 +195,7 @@ void TrovaCopieInCentro(MYSQL *con) {
 
     status = mysql_stmt_prepare(stmt, query, strlen(query));
     test_stmt_error(stmt, status);
-
+//segue la raccolta dei parametri da stdin
     memset(length, 0, sizeof(length));
     idCentro = GetInputNumber("centro");
 
@@ -236,10 +227,10 @@ void TrovaCopieInCentro(MYSQL *con) {
 
     status = mysql_stmt_bind_param(stmt, ps_params);
     test_stmt_error(stmt, status);
-
+    //esecuzione stored procedure
     status = mysql_stmt_execute(stmt);
     test_stmt_error(stmt, status);
-
+//printer è una funzione generica che stampa l'output della stored procedure
     printer(stmt, con);
     mysql_stmt_close(stmt);
 }
@@ -263,7 +254,7 @@ void TrovaRemakes(MYSQL *con) {
 
     status = mysql_stmt_prepare(stmt, query, strlen(query));
     test_stmt_error(stmt, status);
-
+//segue la raccolta dei parametri da stdin
     memset(length, 0, sizeof(length));
     printf("titolo film: ");
     memset(titolo, 0, 45);
@@ -287,10 +278,10 @@ void TrovaRemakes(MYSQL *con) {
 
     status = mysql_stmt_bind_param(stmt, ps_params);
     test_stmt_error(stmt, status);
-
+    //esecuzione stored procedure
     status = mysql_stmt_execute(stmt);
     test_stmt_error(stmt, status);
-
+//printer è una funzione generica che stampa l'output della stored procedure
     printer(stmt, con);
     mysql_stmt_close(stmt);
 }

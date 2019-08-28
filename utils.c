@@ -1,8 +1,3 @@
-//
-// Created by tiziana on 23/08/19.
-//
-
-
 #include "utils.h"
 
 #define MAX_LEN 256
@@ -102,6 +97,7 @@ MYSQL_TIME *getInputTime() {
             printf("Orario non valido\n");
             continue;
         }
+        //*********settaggio ore
         ts->hour = strtol(token, &ptr, 10);
         if (errno == ERANGE) {
             perror("strtol error");
@@ -116,6 +112,7 @@ MYSQL_TIME *getInputTime() {
             printf("Orario non Valido\n");
             continue;
         }
+        //*********settaggio minuti
         ts->minute = strtol(token, &ptr, 10);
         if (errno == ERANGE) {
             perror("strtol error");
@@ -224,7 +221,7 @@ void printer(MYSQL_STMT *stmt, MYSQL *con) {
 
                 for (int i = 0; i < num_fields; ++i) {
                     switch (rs_bind[i].buffer_type) {
-                        case MYSQL_TYPE_VAR_STRING: // Not used in this stored procedure
+                        case MYSQL_TYPE_VAR_STRING:
                             if (*rs_bind[i].is_null)
                                 printf(" val[%d] = NULL;", i);
                             else

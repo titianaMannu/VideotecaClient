@@ -9,7 +9,6 @@ struct configuration conf;
 
 void ManagerRoutine() {
     int operation;
-    MYSQL_STMT *stmt; // supporto per prepared statement
     MYSQL *con = mysql_init(NULL); //inizializza connessione
     load_file(&config, "../manager.json");
     parse_config();
@@ -18,17 +17,10 @@ void ManagerRoutine() {
         fprintf(stderr, "Initilization error: %s\n", mysql_error(con));
         exit(1);
     }
+    // si stabilisce una connessione reale in base ai parametri inseriti nel file json
     if (mysql_real_connect(con, conf.host, conf.username, conf.password, conf.database, conf.port, NULL, 0) == NULL) {
         finish_with_error(con, "Connection");
     }
-
-    stmt = mysql_stmt_init(con); //inizializzazione dello statement
-    if (!stmt) {
-        printf("Could not initialize statement\n");
-        exit(1);
-    }
-
-
     do {
         printf("\n************************************\n"
                "seleziona il numero dell'operazione da eseguire:\n"
@@ -65,6 +57,7 @@ void ManagerRoutine() {
                 AssegnaImpiego(con);
                 break;
             default:
+                printf("operazione non prevista\n");
                 break;
         }
     } while (operation != 8);
@@ -115,12 +108,12 @@ void ReportAnnuale(MYSQL *con) {
 
     status = mysql_stmt_bind_param(stmt, ps_params);
     test_stmt_error(stmt, status);
-
+    //esecuzione stored procedure
     status = mysql_stmt_execute(stmt);
     test_stmt_error(stmt, status);
-
+//printer è una funzione generica che stampa l'output della stored procedure
     printer(stmt, con);
-
+//rilascio risorse
     free(impiegato);
     mysql_stmt_close(stmt);
 
@@ -146,7 +139,7 @@ void ReportMensile(MYSQL *con) {
 
     status = mysql_stmt_prepare(stmt, query, strlen(query));
     test_stmt_error(stmt, status);
-
+//segue la raccolta dei parametri da stdin
     memset(length, 0, sizeof(length));
     memset(buff, 0, 256); // clear buffer
     printf("codice fiscale impiegato: ");
@@ -178,12 +171,12 @@ void ReportMensile(MYSQL *con) {
 
     status = mysql_stmt_bind_param(stmt, ps_params);
     test_stmt_error(stmt, status);
-
+    //esecuzione stored procedure
     status = mysql_stmt_execute(stmt);
     test_stmt_error(stmt, status);
-
+    //printer è una funzione generica che stampa l'output della stored procedure
     printer(stmt, con);
-
+    //rilascio risorse
     free(impiegato);
     free(month);
     mysql_stmt_close(stmt);
@@ -212,7 +205,7 @@ void InserisciImpiegato(MYSQL *con) {
     test_stmt_error(stmt, status);
 
     memset(length, 0, sizeof(length));
-
+//segue la raccolta dei parametri da stdin
     printf("codice fiscale impiegato: ");
     memset(impiegato, 0, 22);
     getInput(16, impiegato, false);
@@ -254,14 +247,15 @@ void InserisciImpiegato(MYSQL *con) {
     ps_params[3].buffer = (char *) titoloStudio;
     ps_params[3].length = &length[3];
     ps_params[3].is_null = 0;
+    //bind parametri
     status = mysql_stmt_bind_param(stmt, ps_params);
     test_stmt_error(stmt, status);
-
+    //esecuzione stored procedure
     status = mysql_stmt_execute(stmt);
     test_stmt_error(stmt, status);
-
+    //printer è una funzione generica che stampa l'output della stored procedure
     printer(stmt, con);
-
+    //rilascio risorse
     free(impiegato);
     mysql_stmt_close(stmt);
 }
@@ -284,7 +278,7 @@ void CheckDatiImpiegato(MYSQL *con) {
 
     status = mysql_stmt_prepare(stmt, query, strlen(query));
     test_stmt_error(stmt, status);
-
+//segue la raccolta dei parametri da stdin
     memset(length, 0, sizeof(length));
     memset(buff, 0, 256); // clear buffer
     printf("codice fiscale impiegato: ");
@@ -300,12 +294,12 @@ void CheckDatiImpiegato(MYSQL *con) {
 
     status = mysql_stmt_bind_param(stmt, ps_params);
     test_stmt_error(stmt, status);
-
+    //esecuzione stored procedure
     status = mysql_stmt_execute(stmt);
     test_stmt_error(stmt, status);
-
+//printer è una funzione generica che stampa l'output della stored procedure
     printer(stmt, con);
-
+//rilascio risorse
     free(impiegato);
     mysql_stmt_close(stmt);
 }
@@ -330,7 +324,7 @@ void AssegnaTurno(MYSQL *con) {
 
     status = mysql_stmt_prepare(stmt, query, strlen(query));
     test_stmt_error(stmt, status);
-
+//segue la raccolta dei parametri da stdin
     memset(length, 0, sizeof(length));
     printf("codice fiscale impiegato: ");
     memset(impiegato, 0, 22);
@@ -381,12 +375,12 @@ void AssegnaTurno(MYSQL *con) {
     ps_params[5].is_null = 0;
     status = mysql_stmt_bind_param(stmt, ps_params);
     test_stmt_error(stmt, status);
-
+    //esecuzione stored procedure
     status = mysql_stmt_execute(stmt);
     test_stmt_error(stmt, status);
-
+//printer è una funzione generica che stampa l'output della stored procedure
     printer(stmt, con);
-
+//rilascio risorse
     free(impiegato);
     mysql_stmt_close(stmt);
 }
@@ -407,7 +401,7 @@ void FilmPiuNoleggiato(MYSQL *con) {
 
     status = mysql_stmt_prepare(stmt, query, strlen(query));
     test_stmt_error(stmt, status);
-
+//segue la raccolta dei parametri da stdin
     idCentro = GetInputNumber("centro");
 
     ps_params[0].buffer_type = MYSQL_TYPE_LONG;
@@ -417,10 +411,10 @@ void FilmPiuNoleggiato(MYSQL *con) {
 
     status = mysql_stmt_bind_param(stmt, ps_params);
     test_stmt_error(stmt, status);
-
+    //esecuzione stored procedure
     status = mysql_stmt_execute(stmt);
     test_stmt_error(stmt, status);
-
+//printer è una funzione generica che stampa l'output della stored procedure
     printer(stmt, con);
     mysql_stmt_close(stmt);
 }
@@ -447,7 +441,7 @@ void AssegnaImpiego(MYSQL *con) {
     test_stmt_error(stmt, status);
 
     memset(length, 0, sizeof(length));
-
+//segue la raccolta dei parametri da stdin
     printf("codice fiscale impiegato: ");
     memset(impiegato, 0, 22);
     getInput(16, impiegato, false);
@@ -478,12 +472,12 @@ void AssegnaImpiego(MYSQL *con) {
 
     status = mysql_stmt_bind_param(stmt, ps_params);
     test_stmt_error(stmt, status);
-
+    //esecuzione stored procedure
     status = mysql_stmt_execute(stmt);
     test_stmt_error(stmt, status);
-
+//printer è una funzione generica che stampa l'output della stored procedure
     printer(stmt, con);
-
+//rilascio risorse
     free(impiegato);
     mysql_stmt_close(stmt);
 }

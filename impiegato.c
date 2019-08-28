@@ -8,7 +8,6 @@ struct configuration conf;
 
 void ImpiegatoRoutine() {
     int operation;
-    MYSQL_STMT *stmt; // supporto per prepared statement
     MYSQL *con = mysql_init(NULL); //inizializza connessione
     load_file(&config, "../impiegato.json");
     parse_config();
@@ -17,14 +16,9 @@ void ImpiegatoRoutine() {
         fprintf(stderr, "Initilization error: %s\n", mysql_error(con));
         exit(1);
     }
+    // si stabilisce una connessione reale in base ai parametri inseriti nel file json
     if (mysql_real_connect(con, conf.host, conf.username, conf.password, conf.database, conf.port, NULL, 0) == NULL) {
         finish_with_error(con, "Connection");
-    }
-
-    stmt = mysql_stmt_init(con); //inizializzazione dello statement
-    if (!stmt) {
-        printf("Could not initialize statement\n");
-        exit(1);
     }
     do {
         printf("\n************************************\n"
@@ -65,6 +59,7 @@ void ImpiegatoRoutine() {
                 ModificaPosizione(con);
                 break;
             default:
+                printf("operazione non prevista\n");
                 break;
         }
     } while (operation != 9);
@@ -97,7 +92,7 @@ void InserisciCliente(MYSQL *con) {
     test_stmt_error(stmt, status);
 
     memset(length, 0, sizeof(length));
-
+//segue la raccolta dei parametri da stdin
     printf("codice fiscale codFiscale: ");
     memset(codFiscale, 0, 22);
     getInput(16, codFiscale, false);
@@ -159,12 +154,12 @@ void InserisciCliente(MYSQL *con) {
 
     status = mysql_stmt_bind_param(stmt, ps_params);
     test_stmt_error(stmt, status);
-
+    //esecuzione stored procedure
     status = mysql_stmt_execute(stmt);
     test_stmt_error(stmt, status);
-
+//printer è una funzione generica che stampa l'output della stored procedure
     printer(stmt, con);
-
+//rilascio risorse
     free(codFiscale);
     mysql_stmt_close(stmt);
 }
@@ -185,7 +180,7 @@ void LeggiDatiCliente(MYSQL *con) {
 
     status = mysql_stmt_prepare(stmt, query, strlen(query));
     test_stmt_error(stmt, status);
-
+//segue la raccolta dei parametri da stdin
     tessera = GetInputNumber("numero tessera");
 
     ps_params[0].buffer_type = MYSQL_TYPE_LONG;
@@ -195,10 +190,10 @@ void LeggiDatiCliente(MYSQL *con) {
 
     status = mysql_stmt_bind_param(stmt, ps_params);
     test_stmt_error(stmt, status);
-
+    //esecuzione stored procedure
     status = mysql_stmt_execute(stmt);
     test_stmt_error(stmt, status);
-
+//printer è una funzione generica che stampa l'output della stored procedure
     printer(stmt, con);
     mysql_stmt_close(stmt);
 }
@@ -219,7 +214,7 @@ void TrovaClientiIrregolari(MYSQL *con) {
 
     status = mysql_stmt_prepare(stmt, query, strlen(query));
     test_stmt_error(stmt, status);
-
+//segue la raccolta dei parametri da stdin
     centro = GetInputNumber("numero centro");
 
     ps_params[0].buffer_type = MYSQL_TYPE_LONG;
@@ -229,10 +224,10 @@ void TrovaClientiIrregolari(MYSQL *con) {
 
     status = mysql_stmt_bind_param(stmt, ps_params);
     test_stmt_error(stmt, status);
-
+    //esecuzione stored procedure
     status = mysql_stmt_execute(stmt);
     test_stmt_error(stmt, status);
-
+//printer è una funzione generica che stampa l'output della stored procedure
     printer(stmt, con);
     mysql_stmt_close(stmt);
 }
@@ -257,7 +252,7 @@ void AssegnaCollocazione(MYSQL *con) {
 
     status = mysql_stmt_prepare(stmt, query, strlen(query));
     test_stmt_error(stmt, status);
-
+//segue la raccolta dei parametri da stdin
     centro = GetInputNumber("centro");
     settore = GetInputNumber("settore");
 
@@ -271,10 +266,12 @@ void AssegnaCollocazione(MYSQL *con) {
     getInput(45, regista, false);
     length[3] = strlen(regista);
 
-    printf("seleziona la tipologia:\n"
-           "-0 VHS\n"
-           "-1 DVD\n");
-    val = GetInputNumber("tipologia");
+    do { //si deve specificare esattamente una delle 2 tipologie 0/1
+        printf("seleziona la tipologia:\n"
+               "-0 VHS\n"
+               "-1 DVD\n");
+        val = GetInputNumber("tipologia");
+    }while(val != 0  && val != 1);
     occ = GetInputNumber("numero occorrenze");
     pos = GetInputNumber("posizione");
 
@@ -318,10 +315,10 @@ void AssegnaCollocazione(MYSQL *con) {
 
     status = mysql_stmt_bind_param(stmt, ps_params);
     test_stmt_error(stmt, status);
-
+    //esecuzione stored procedure
     status = mysql_stmt_execute(stmt);
     test_stmt_error(stmt, status);
-
+//printer è una funzione generica che stampa l'output della stored procedure
     printer(stmt, con);
     mysql_stmt_close(stmt);
 }
@@ -347,7 +344,7 @@ void InserisciFilm(MYSQL *con) {
 
     status = mysql_stmt_prepare(stmt, query, strlen(query));
     test_stmt_error(stmt, status);
-
+//segue la raccolta dei parametri da stdin
     printf("titolo film: ");
     memset(titolo, 0, 45);
     getInput(45, titolo, false);
@@ -361,10 +358,12 @@ void InserisciFilm(MYSQL *con) {
     costo = GetInputNumber("costo");
     ts = getInputDate(true);
 
-    printf("seleziona la tipologia:\n"
-           "-0 classico\n"
-           "-1 nuovo\n");
-    val = GetInputNumber("tipologia");
+    do { //si deve specificare esattamente una delle 2 tipologie 0/1
+        printf("seleziona la tipologia:\n"
+               "-0 classico\n"
+               "-1 nuovo\n");
+        val = GetInputNumber("tipologia");
+    }while(val != 0  && val != 1);
     length[4] = strlen(tipologia[val]);
 
     printf("titolo originale: ");
@@ -415,10 +414,10 @@ void InserisciFilm(MYSQL *con) {
 
     status = mysql_stmt_bind_param(stmt, ps_params);
     test_stmt_error(stmt, status);
-
+    //esecuzione stored procedure
     status = mysql_stmt_execute(stmt);
     test_stmt_error(stmt, status);
-
+//printer è una funzione generica che stampa l'output della stored procedure
     printer(stmt, con);
     mysql_stmt_close(stmt);
 }
@@ -439,7 +438,7 @@ void LeggiDatiNoleggio(MYSQL *con) {
 
     status = mysql_stmt_prepare(stmt, query, strlen(query));
     test_stmt_error(stmt, status);
-
+//segue la raccolta dei parametri da stdin
     idNoleggio = GetInputNumber("Id Noleggio");
 
     ps_params[0].buffer_type = MYSQL_TYPE_LONG;
@@ -452,7 +451,7 @@ void LeggiDatiNoleggio(MYSQL *con) {
 
     status = mysql_stmt_execute(stmt);
     test_stmt_error(stmt, status);
-
+//printer è una funzione generica che stampa l'output della stored procedure
     printer(stmt, con);
     mysql_stmt_close(stmt);
 }
@@ -477,7 +476,7 @@ void AggiungiCopie(MYSQL *con) {
 
     status = mysql_stmt_prepare(stmt, query, strlen(query));
     test_stmt_error(stmt, status);
-
+//segue la raccolta dei parametri da stdin
     centro = GetInputNumber("centro");
     settore = GetInputNumber("settore");
 
@@ -491,10 +490,12 @@ void AggiungiCopie(MYSQL *con) {
     getInput(45, regista, false);
     length[3] = strlen(regista);
 
-    printf("seleziona la tipologia:\n"
-           "-0 VHS\n"
-           "-1 DVD\n");
-    val = GetInputNumber("tipologia");
+    do { //si deve specificare esattamente una delle 2 tipologie 0/1
+        printf("seleziona la tipologia:\n"
+               "-0 VHS\n"
+               "-1 DVD\n");
+        val = GetInputNumber("tipologia");
+    }while(val != 0  && val != 1);
     occ = GetInputNumber("numero occorrenze");
 
     length[5] = 3;
@@ -534,7 +535,7 @@ void AggiungiCopie(MYSQL *con) {
 
     status = mysql_stmt_execute(stmt);
     test_stmt_error(stmt, status);
-
+//printer è una funzione generica che stampa l'output della stored procedure
     printer(stmt, con);
     mysql_stmt_close(stmt);
 }
@@ -559,7 +560,7 @@ void ModificaPosizione(MYSQL *con) {
 
     status = mysql_stmt_prepare(stmt, query, strlen(query));
     test_stmt_error(stmt, status);
-
+//segue la raccolta dei parametri da stdin
     centro = GetInputNumber("centro");
     settore = GetInputNumber("settore");
 
@@ -602,10 +603,10 @@ void ModificaPosizione(MYSQL *con) {
 
     status = mysql_stmt_bind_param(stmt, ps_params);
     test_stmt_error(stmt, status);
-
+    //esecuzione stored procedure
     status = mysql_stmt_execute(stmt);
     test_stmt_error(stmt, status);
-
+//printer è una funzione generica che stampa l'output della stored procedure
     printer(stmt, con);
     mysql_stmt_close(stmt);
 }
