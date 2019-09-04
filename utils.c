@@ -237,7 +237,7 @@ void printer(MYSQL_STMT *stmt, MYSQL *con) {
                             if (*rs_bind[i].is_null)
                                 printf(" val[%d] = NULL; ", i);
                             else
-                                printf("%s val[%d] = %d; ", fields[i].name, i, (short) rs_bind[i].buffer);
+                                printf("%s val[%d] = %hu; ", fields[i].name, i, *(short *) rs_bind[i].buffer);
                             break;
                         case MYSQL_TYPE_NEWDECIMAL:
                             if (*rs_bind[i].is_null)
