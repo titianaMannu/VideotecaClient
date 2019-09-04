@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
         printf("not correct input, usage: <user>.\nChoose between cliente, manager and impiegato\n");
         exit(EXIT_FAILURE);
     }
-    if (strncmp("cliente", argv[1], 6) == 0) {
+    if (strncmp("cliente", argv[1], 7) == 0) {
         ClienteRoutine();
     } else if (strncmp("impiegato", argv[1], 9) == 0) {
         ImpiegatoRoutine();

@@ -356,6 +356,7 @@ void InserisciFilm(MYSQL *con) {
     length[1] = strlen(regista);
 
     costo = GetInputNumber("costo");
+    printf("anno uscita\t");
     ts = getInputDate(true);
 
     do { //si deve specificare esattamente una delle 2 tipologie 0/1

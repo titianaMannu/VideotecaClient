@@ -331,6 +331,7 @@ void AssegnaTurno(MYSQL *con) {
     getInput(16, impiegato, false);
     length[0] = strlen(impiegato);
 
+    printf("data inizio impiego\t");
     ts = getInputDate(false);
 
     printf("inserire mese del turno come <mm>: ");
